@@ -1,7 +1,7 @@
 /*
-Version: 1.4
+Version: 1.5
 Last edited by: Natalia Pakhomova
-Last edit date: 7/05/2023
+Last edit date: 14/05/2023
 
 User module router
 */
@@ -10,11 +10,10 @@ User module router
 const express = require('express');
 // Create an instance of an Express router
 const router = express.Router();
-
+// Import the JWT authentication middleware
+const {authenticateToken} = require('../helpers/auth');
 // Import the users controller module
 const userController = require('../controllers/users');
-// Import the authentication middleware
-const authenticateToken = require('../middlewares/auth');
 
 // Mount the GET (Read) endpoint for retrieving all users and map it to /api/users/ route, protected by authentication middleware
 router.get('/', authenticateToken, userController.getUsers);

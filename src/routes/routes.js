@@ -1,7 +1,7 @@
 /*
-Version: 1.2
+Version: 1.3
 Last edited by: Natalia Pakhomova
-Last edit date: 7/05/2023
+Last edit date: 14/05/2023
 
 Main application router
 */

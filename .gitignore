@@ -1,5 +1,5 @@
-package-lock.json
 node_modules/*
-logs/*
 public/projects/*
+logs/*
 .env
+*.DS_Store

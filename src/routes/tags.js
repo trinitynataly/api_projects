@@ -1,7 +1,7 @@
 /*
-Version: 1.1
+Version: 1.2
 Last edited by: Natalia Pakhomova
-Last edit date: 5/05/2023
+Last edit date: 14/05/2023
 
 Tag module router
 */
@@ -10,11 +10,10 @@ Tag module router
 const express = require('express');
 // Create an instance of an Express router
 const router = express.Router();
-
+// Import the JWT authentication middleware
+const {authenticateToken} = require('../helpers/auth');
 // Import the tags controller module
 const tagController = require('../controllers/tags');
-// Import the authentication middleware
-const authenticateToken = require('../middlewares/auth');
 
 // Mount the GET (Read) endpoint for retrieving all tags and map it to /api/tags/ route
 router.get('/', tagController.getTags);

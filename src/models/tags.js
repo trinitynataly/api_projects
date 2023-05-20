@@ -1,32 +1,51 @@
 /*
-Version: 1.1
+Version: 1.2
 Last edited by: Natalia Pakhomova
-Last edit date: 7/05/2023
+Last edit date: 14/05/2023
 
 Tag Schema for storing Tags in database
 */
 
 // Import the Mongoose library
 const mongoose = require('mongoose');
+// Import the Joi library for validating schemas
+const Joi = require('joi');
 // Destructure the Schema class from Mongoose
-const { Schema } = mongoose;
+const {Schema} = mongoose;
 
 // Define the schema for the Tags collection
 const tagsSchema = new Schema({
-    // Name of a tag (required)
-    name: { type: String, required: true }
+    name: {type: String, required: true},
 });
 
-// Define an index for the name field
-tagsSchema.index({
-    name: 1 // Sort by name in ascending order
-}, {
-    unique: true, // Ensure that each tag name is unique
-    collation: { // Define a collation to specify case insensitivity
-        locale: 'en_US',
-        strength: 1
+// Create an index on the name field for case-insensitive sorting
+tagsSchema.index(
+    {
+        name: 1,
+    },
+    {
+        unique: true,
+        collation: {
+            locale: 'en_US',
+            strength: 1,
+        },
     }
-});
+);
 
-// Export the Tags model using the tagsSchema definition
-module.exports = mongoose.model('Tags', tagsSchema);
+// Create a Tag model from the tag schema
+const Tag = mongoose.model('Tags', tagsSchema);
+
+
+// Function to validate the tag input using Joi
+const validateTag = (tag) => {
+    // Define a schema for validating the tag
+    const schema = Joi.object({
+        // Name of a tag (required)
+        name: Joi.string().required()
+    });
+    // Validate the login using Joi
+    return schema.validate(tag);
+}
+
+// Export the Tag model and Joi schema
+module.exports = {Tag, validateTag};
