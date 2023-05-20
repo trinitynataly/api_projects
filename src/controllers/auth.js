@@ -6,10 +6,12 @@ Last edit date: 14/05/2023
 Authentication module controller, handles all authentication-related requests
 */
 
+// Import the HTTP errors library for creating HTTP errors
+const createError = require('http-errors');
 // Import JSON Web Token (JWT) module for creating and verifying tokens
 const jwt = require("jsonwebtoken");
 // Import the extractFields helper function for extracting fields from POST request body
-const {extractFields} = require("../helpers/data");
+const {extractFields, handleDBError} = require("../helpers/data");
 // Import the RefreshToken model
 const {RefreshToken} = require('../models/auth');
 // Import the validatePassword helper function for validating passwords
@@ -18,26 +20,27 @@ const {validatePassword} = require('../helpers/auth');
 const {User, validateLogin} = require('../models/users');
 
 // Create and export the login controller function
-exports.login = async (req, res) => {
-    const authData = extractFields(req.body, ['email', 'password']);
-    // Validate the request body using the authJoiSchema Joi schema
-    const {error} = validateLogin(authData);
-    // If the validation fails, return a 400 (Bad Request) error with the error message
-    if (error) return res.status(400).json({error: error.details[0].message});
+exports.login = async (req, res, next) => {
     try {
+        // Extract the email and password fields from the request body
+        const authData = extractFields(req.body, ['email', 'password']);
+        // Validate the request body using the authJoiSchema Joi schema
+        const {error} = validateLogin(authData);
+        // If the validation fails, return a 400 (Bad Request) error with the error message
+        if (error) throw createError(400, error.details[0].message);
         // Find the user associated with the email provided by the user (using case-insensitive search)
         const user = await User.findOne({email: {$regex: new RegExp(authData.email, 'i')}});
         // Check if the user was found
         if (!user) {
             // If the user wasn't found return 404 (Not Found)
-            return res.status(404).json({error: "User not found"});
+            throw createError(404, "User not found");
         }
         // Check if the password provided matches the password of the user with validatePassword helper function
         const validPassword = await validatePassword(authData.password, user.password);
         // Check if the password was valid
         if (!validPassword) {
             // If the password wasn't valid return 401 (Unauthorized)
-            return res.status(401).json({error: "Invalid password"});
+            throw createError(401, "Invalid password");
         }
         // Create and assign a token with the user ID as payload and the secret key from the environment variables
         const accessToken = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
@@ -62,15 +65,16 @@ exports.login = async (req, res) => {
             user: userResponse
         });
     } catch (error) {
-        // If there was an error return 500 (Internal Server Error) with the error message
-        res.status(500).json({error: error.message});
+        // If there was an error return the error message
+        handleDBError(res, error, next);
     }
 };
 
 // Create and export the refreshToken controller function
-exports.refreshToken = async (req, res) => {
-    const refreshData = extractFields(req.body, ['refresh_token'], "");
+exports.refreshToken = async (req, res, next) => {
     try {
+        // Extract the refresh token from the request body
+        const refreshData = extractFields(req.body, ['refresh_token'], "");
         // Get the refresh token from the request body
         const refreshToken = refreshData.refresh_token;
         // Find a matching refresh token in the database
@@ -78,7 +82,7 @@ exports.refreshToken = async (req, res) => {
         // Check if the refresh token was found
         if (!refreshTokenRow) {
             // If the refresh token wasn't found return 401 (Unauthorized)
-            return res.status(401).json({error: 'Invalid token'});
+            throw createError(401, "Invalid token");
         }
         // Verify the refresh token using the JWT library and the secret key from the environment variables
         jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, async (err, decoded) => {
@@ -87,7 +91,7 @@ exports.refreshToken = async (req, res) => {
                 // If there was an error, delete the refresh token from the database
                 await refreshTokenRow.delete();
                 // Return 401 (Unauthorized)
-                return res.status(401).json({error: 'Invalid token'});
+                throw createError(401, "Invalid token");
             }
             // Get the user ID from the decoded refresh token
             const user = decoded.id;
@@ -97,7 +101,7 @@ exports.refreshToken = async (req, res) => {
             return res.status(200).json({access_token: accessToken});
         });
     } catch (error) {
-        // If there was an error return 500 (Internal Server Error) with the error message
-        res.status(500).json({error: error.message});
+        // If there was an error return the error message
+       handleDBError(res, error, next);
     }
 };
