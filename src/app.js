@@ -21,9 +21,9 @@ const {createLogger, transports, format} = require("winston");
 // Destructure some formatting functions from Winston for use in the logger configuration
 const {combine, timestamp, label, printf} = format;
 // Import a Winston transport for logging to rotating files
-const DailyRotateFile = require('winston-daily-rotate-file');
+const DailyRotateFile = require("winston-daily-rotate-file");
 // Import the HTTP errors library for creating HTTP errors
-const createError = require('http-errors');
+const createError = require("http-errors");
 // Import the application's API routes
 const routes = require('./routes/routes');
 // Load environment variables from a .env file
