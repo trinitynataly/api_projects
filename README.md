@@ -46,9 +46,10 @@ Base URL: `/api/auth`
 - **Method:** POST
 - **Description:** Authenticate user credentials and generate access and refresh tokens.
 - **Parameters:**
-    - `email` (string): Email of the user.
-    - `password` (string): Password of the user.
+  - `email` (string): Email of the user.
+  - `password` (string): Password of the user.
 - **Example Request:**
+
   ```http
   POST /api/auth/login HTTP/1.1
   Host: example.com
@@ -59,6 +60,7 @@ Base URL: `/api/auth`
     "password": "password123"
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -79,8 +81,9 @@ Base URL: `/api/auth`
 - **Method:** POST
 - **Description:** Refresh the access token using a valid refresh token.
 - **Parameters:**
-    - `refresh_token` (string): Refresh token obtained during login.
+  - `refresh_token` (string): Refresh token obtained during login.
 - **Example Request:**
+
   ```http
   POST /api/auth/refresh HTTP/1.1
   Host: example.com
@@ -90,6 +93,7 @@ Base URL: `/api/auth`
     "refresh_token": "<refresh_token>"
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -141,7 +145,7 @@ Base URL: `/api/users`
 - **Method:** GET
 - **Description:** Retrieve a specific user by ID from the database.
 - **Parameters:**
-    - `id` (path parameter): ID of the user to retrieve.
+  - `id` (path parameter): ID of the user to retrieve.
 - **Authentication:** JWT token required.
 - **Example Request:**
   ```http
@@ -165,11 +169,12 @@ Base URL: `/api/users`
 - **Method:** POST
 - **Description:** Create a new user in the database.
 - **Parameters:**
-    - `name` (string): Name of the user.
-    - `email` (string): Email of the user.
-    - `password` (string): Password of the user.
+  - `name` (string): Name of the user.
+  - `email` (string): Email of the user.
+  - `password` (string): Password of the user.
 - **Authentication:** JWT token required.
 - **Example Request:**
+
   ```http
   POST /api/users HTTP/1.1
   Host: example.com
@@ -182,6 +187,7 @@ Base URL: `/api/users`
     "password": "password123"
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -198,12 +204,13 @@ Base URL: `/api/users`
 - **Method:** PUT
 - **Description:** Update a specific user by ID in the database.
 - **Parameters:**
-    - `id` (path parameter): ID of the user to update.
-    - `name` (string): Updated name of the user.
-    - `email` (string): Updated email of the user.
-    - `password` (string): Updated password of the user.
+  - `id` (path parameter): ID of the user to update.
+  - `name` (string): Updated name of the user.
+  - `email` (string): Updated email of the user.
+  - `password` (string): Updated password of the user.
 - **Authentication:** JWT token required.
 - **Example Request:**
+
   ```http
   PUT /api/users/XXXXXXXXXXXX3 HTTP/1.1
   Host: example.com
@@ -216,6 +223,7 @@ Base URL: `/api/users`
     "password": "newpassword123"
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -232,13 +240,14 @@ Base URL: `/api/users`
 - **Method:** DELETE
 - **Description:** Delete a specific user by ID from the database.
 - **Parameters:**
-    - `id` (path parameter): ID of the user to delete.
+  - `id` (path parameter): ID of the user to delete.
 - **Authentication:** JWT token required.
 - **Example Request:**
   ```http
   DELETE /api/users/XXXXXXXXXXXX3 HTTP/1.1
   Host: example.com
   Authorization: Bearer <JWT token>
+  Content-Type: application/json
   ```
 - **Example Response:**
   ```json
@@ -326,9 +335,11 @@ Base URL: `/api/projects`
   - `link` (string): Link to the project.
   - `tags` (array): Array of tags associated with the project.
 - **Example Request:**
+
   ```http
   POST /api/projects HTTP/1.1
   Host: example.com
+  Authorization: Bearer <JWT token>
   Content-Type: application/json
 
   {
@@ -339,6 +350,7 @@ Base URL: `/api/projects`
     "tags": ["tag1", "tag2"]
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -365,9 +377,11 @@ Base URL: `/api/projects`
   - `link` (string): Updated link to the project.
   - `tags` (array): Updated array of tags associated with the project.
 - **Example Request:**
+
   ```http
   PUT /api/projects/XXXXXXXXXXXX3 HTTP/1.1
   Host: example.com
+  Authorization: Bearer <JWT token>
   Content-Type: application/json
 
   {
@@ -378,6 +392,7 @@ Base URL: `/api/projects`
     "tags": ["tag1", "tag3"]
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -400,9 +415,11 @@ Base URL: `/api/projects`
   - `id` (path parameter): ID of the project to update.
   - `image` (file): Image file to upload for the project.
 - **Example Request:**
+
   ```http
   PUT /api/projects/XXXXXXXXXXXX3/upload HTTP/1.1
   Host: example.com
+  Authorization: Bearer <JWT token>
   Content-Type: multipart/form-data
 
   --boundary
@@ -412,6 +429,7 @@ Base URL: `/api/projects`
   <image file content>
   --boundary--
   ```
+
 - **Example Response:**
   ```json
   {
@@ -437,6 +455,8 @@ Base URL: `/api/projects`
   ```http
   DELETE /api/projects/XXXXXXXXXXXX3 HTTP/1.1
   Host: example.com
+  Authorization: Bearer <JWT token>
+  Content-Type: application/json
   ```
 - **Example Response:**
   ```json
@@ -447,7 +467,7 @@ Base URL: `/api/projects`
 
 ### Tags Module
 
-This module handles all requests related to tags. Routes that retrieve tags are public and do not require authentication. All other routes are protected and require a valid JWT token to access. 
+This module handles all requests related to tags. Routes that retrieve tags are public and do not require authentication. All other routes are protected and require a valid JWT token to access.
 
 Base URL: `/api/tags`
 
@@ -506,6 +526,7 @@ Base URL: `/api/tags`
   - `name` (string): Name of the tag.
 - **Authentication:** JWT token required.
 - **Example Request:**
+
   ```http
   POST /api/tags HTTP/1.1
   Host: example.com
@@ -516,6 +537,7 @@ Base URL: `/api/tags`
     "name": "Tag3"
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -534,6 +556,7 @@ Base URL: `/api/tags`
   - `name` (string): Updated name of the tag.
 - **Authentication:** JWT token required.
 - **Example Request:**
+
   ```http
   PUT /api/tags/XXXXXXXXXXXX3 HTTP/1.1
   Host: example.com
@@ -544,6 +567,7 @@ Base URL: `/api/tags`
     "name": "UpdatedTag3"
   }
   ```
+
 - **Example Response:**
   ```json
   {
@@ -565,6 +589,7 @@ Base URL: `/api/tags`
   DELETE /api/tags/XXXXXXXXXXXX3 HTTP/1.1
   Host: example.com
   Authorization: Bearer <JWT token>
+  Content-Type: application/json
   ```
 - **Example Response:**
   ```json
